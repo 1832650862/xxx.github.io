@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>创意设计师 | 国潮与3D角色作品集</title>
+<style>
+  /* ==================== 国风主题 CSS Variables ==================== */
+  :root {
+    --bg: #161412;         /* 深邃墨黑背景 */
+    --bg2: #1f1c19;        /* 稍浅的墨色区块 */
+    --text: #f4ebd9;       /* 宣纸白文字 */
+    --text-dim: #a39b8b;   /* 暗金色辅助文字 */
+    --accent: #c84b31;     /* 朱砂红 (主色调) */
+    --accent2: #e6b95c;    /* 琉璃黄 (辅色调) */
+    --accent3: #4a6b7c;    /* 黛蓝 (点缀色) */
+    --card-bg: #24201c;    /* 卡片背景 */
+    --radius: 16px;
+    --transition: .4s cubic-bezier(.25,.8,.25,1);
+  }
+  
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
+  body {
+    font-family: 'Noto Serif SC', 'Songti SC', 'STSong', serif; /* 优先使用衬线体增加国风感 */
+    background: var(--bg); color: var(--text);
+    overflow-x: hidden; cursor: none; line-height: 1.6;
+  }
+  a { text-decoration: none; color: inherit; cursor: none; }
+  button { cursor: none; font-family: inherit; }
+  img, video { max-width: 100%; display: block; }
+
+  /* ==================== Custom Cursor (自定义光标) ==================== */
+  .cursor-dot {
+    width: 8px; height: 8px; background: var(--accent);
+    border-radius: 50%; position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 99999; transition: transform .1s, background .3s;
+  }
+  .cursor-ring {
+    width: 40px; height: 40px; border: 2px solid rgba(200,75,49,.5);
+    border-radius: 50%; position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 99998; transition: width .3s, height .3s, border-color .3s, background .3s;
+  }
+  .cursor-ring.hover { width: 60px; height: 60px; border-color: var(--accent2); background: rgba(230,185,92,.1); }
+  .cursor-ring.click { transform: translate(-50%,-50%) scale(.8); }
+
+  /* ==================== Navigation (导航栏) ==================== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 20px 60px; display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(20px); background: rgba(22,20,18,.8);
+    border-bottom: 1px solid rgba(244,235,217,.05); transition: var(--transition);
+  }
+  nav.scrolled { padding: 12px 60px; background: rgba(22,20,18,.95); }
+  .logo {
+    font-size: 1.5rem; font-weight: 800; letter-spacing: 2px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    font-size: .95rem; font-weight: 500; letter-spacing: 1px;
+    position: relative; padding: 4px 0; transition: color .3s;
+  }
+  .nav-links a::after {
+    content:''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .3s;
+  }
+  .nav-links a:hover { color: var(--accent2); }
+  .nav-links a:hover::after { width: 100%; }
+  .menu-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 5px; }
+  .menu-toggle span { width: 28px; height: 2px; background: var(--text); transition: var(--transition); }
+
+  /* ==================== Hero Section (首屏) ==================== */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden; padding: 120px 60px 60px;
+  }
+  .hero-bg-shapes { position: absolute; inset: 0; overflow: hidden; z-index: 0; }
+  .shape {
+    position: absolute; border-radius: 50%; filter: blur(100px); opacity: .2;
+    animation: floatShape 20s infinite ease-in-out;
+  }
+  .shape:nth-child(1) { width: 600px; height: 600px; background: var(--accent); top: -10%; right: -5%; }
+  .shape:nth-child(2) { width: 500px; height: 500px; background: var(--accent3); bottom: -10%; left: -5%; animation-delay: -7s; }
+  .shape:nth-child(3) { width: 400px; height: 400px; background: var(--accent2); top: 40%; left: 30%; animation-delay: -14s; }
+  @keyframes floatShape {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(50px, -50px) scale(1.1); }
+    50% { transform: translate(-30px, 30px) scale(.9); }
+    75% { transform: translate(40px, 40px) scale(1.05); }
+  }
+  .hero-content { position: relative; z-index: 1; text-align: center; max-width: 900px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; border-radius: 50px;
+    background: rgba(200,75,49,.1); border: 1px solid rgba(200,75,49,.3);
+    font-size: .85rem; color: var(--accent2); margin-bottom: 30px; animation: fadeInUp .8s both;
+  }
+  .hero-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(1.5); } }
+  
+  .hero h1 {
+    font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; line-height: 1.1;
+    letter-spacing: 4px; margin-bottom: 24px; animation: fadeInUp .8s .2s both;
+  }
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 1.2rem; color: var(--text-dim); max-width: 600px; margin: 0 auto 40px;
+    animation: fadeInUp .8s .4s both; font-family: system-ui, sans-serif;
+  }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; animation: fadeInUp .8s .6s both; }
+  
+  .btn {
+    padding: 14px 36px; border-radius: 50px; font-size: 1rem; font-weight: 600;
+    border: none; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px;
+    position: relative; overflow: hidden;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--accent), #e05a3d); color: #fff; box-shadow: 0 4px 25px rgba(200,75,49,.3); }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 35px rgba(200,75,49,.5); }
+  .btn-outline { background: transparent; color: var(--text); border: 2px solid rgba(244,235,217,.2); }
+  .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); transform: translateY(-3px); }
+  
+  .scroll-indicator {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px; animation: fadeInUp .8s 1s both;
+  }
+  .scroll-indicator span { font-size: .75rem; color: var(--text-dim); letter-spacing: 2px; }
+  .scroll-mouse { width: 26px; height: 40px; border: 2px solid rgba(244,235,217,.3); border-radius: 13px; position: relative; }
+  .scroll-mouse::after {
+    content: ''; width: 4px; height: 8px; background: var(--accent2); border-radius: 2px;
+    position: absolute; top: 8px; left: 50%; transform: translateX(-50%); animation: scrollDown 2s infinite;
+  }
+  @keyframes scrollDown { 0% { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(16px); } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ==================== Section Common ==================== */
+  section { padding: 120px 60px; position: relative; }
+  .section-header { text-align: center; margin-bottom: 80px; }
+  .section-header .label { font-size: .85rem; text-transform: uppercase; letter-spacing: 3px; color: var(--accent2); margin-bottom: 12px; display: block; }
+  .section-header h2 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: 2px; }
+  .reveal { opacity: 0; transform: translateY(60px); transition: opacity .8s, transform .8s; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ==================== Portfolio / Projects ==================== */
+  .portfolio { max-width: 1400px; margin: 0 auto; }
+  .filter-bar { display: flex; justify-content: center; gap: 12px; margin-bottom: 60px; flex-wrap: wrap; }
+  .filter-btn {
+    padding: 10px 28px; border-radius: 50px; background: rgba(244,235,217,.05);
+    border: 1px solid rgba(244,235,217,.1); color: var(--text-dim); font-size: .9rem; font-weight: 500; transition: var(--transition);
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 4px 20px rgba(200,75,49,.4);
+  }
+  
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 30px; }
+  .project-card {
+    position: relative; border-radius: var(--radius); overflow: hidden; background: var(--card-bg);
+    transition: var(--transition); transform-style: preserve-3d; perspective: 1000px;
+    border: 1px solid rgba(244,235,217,.05);
+  }
+  .project-card .card-inner { transition: transform .1s ease-out; transform-style: preserve-3d; }
+  .project-thumb { aspect-ratio: 16/10; overflow: hidden; position: relative; background: #000; }
+  .project-thumb img, .project-thumb video { width: 100%; height: 100%; object-fit: cover; transition: transform .6s; }
+  .project-card:hover .project-thumb img { transform: scale(1.05); }
+  
+  /* 视频播放图标遮罩 */
+  .video-indicator {
+    position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,.6);
+    color: #fff; padding: 4px 10px; border-radius: 20px; font-size: .75rem;
+    display: flex; align-items: center; gap: 5px; z-index: 2; backdrop-filter: blur(4px);
+  }
+
+  .project-overlay {
+    position: absolute; inset: 0; background: linear-gradient(to top, rgba(22,20,18,.95) 0%, transparent 60%);
+    opacity: 0; transition: opacity .4s; display: flex; align-items: flex-end; padding: 30px;
+  }
+  .project-card:hover .project-overlay { opacity: 1; }
+  .overlay-actions { display: flex; gap: 12px; }
+  .overlay-btn {
+    width: 48px; height: 48px; border-radius: 50%; background: rgba(244,235,217,.15); backdrop-filter: blur(10px);
+    border: 1px solid rgba(244,235,217,.2); color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; transition: var(--transition);
+  }
+  .overlay-btn:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+  
+  .project-info { padding: 24px; }
+  .project-tags { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .project-tag {
+    padding: 4px 12px; border-radius: 50px; font-size: .75rem;
+    background: rgba(230,185,92,.1); color: var(--accent2); border: 1px solid rgba(230,185,92,.2);
+  }
+  .project-info h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+  .project-info p { font-size: .9rem; color: var(--text-dim); font-family: system-ui, sans-serif; }
+
+  /* ==================== Lightbox (全屏查看) ==================== */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 10000; background: rgba(10,9,8,.95); backdrop-filter: blur(20px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden; transition: var(--transition);
+  }
+  .lightbox.active { opacity: 1; visibility: visible; }
+  .lightbox-content {
+    max-width: 1000px; width: 90%; text-align: center;
+    transform: scale(.9) translateY(30px); transition: transform .5s cubic-bezier(.25,.8,.25,1);
+  }
+  .lightbox.active .lightbox-content { transform: scale(1) translateY(0); }
+  .lightbox-content img, .lightbox-content video {
+    width: 100%; max-height: 75vh; object-fit: contain; border-radius: var(--radius);
+    box-shadow: 0 20px 60px rgba(0,0,0,.8); margin-bottom: 24px; background: #000;
+  }
+  .lightbox-content h3 { font-size: 1.8rem; margin-bottom: 12px; }
+  .lightbox-content p { color: var(--text-dim); font-size: 1.05rem; max-width: 600px; margin: 0 auto; font-family: system-ui, sans-serif;}
+  
+  .lightbox-close {
+    position: absolute; top: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%;
+    background: rgba(244,235,217,.1); border: 1px solid rgba(244,235,217,.2); color: #fff; font-size: 1.5rem;
+    display: flex; align-items: center; justify-content: center; transition: var(--transition);
+  }
+  .lightbox-close:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg); }
+  .lightbox-nav {
+    position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%;
+    background: rgba(244,235,217,.1); border: 1px solid rgba(244,235,217,.2); color: #fff; font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center; transition: var(--transition);
+  }
+  .lightbox-nav:hover { background: var(--accent); }
+  .lightbox-prev { left: 30px; }
+  .lightbox-next { right: 30px; }
+
+  /* ==================== Footer ==================== */
+  footer { padding: 60px; text-align: center; border-top: 1px solid rgba(244,235,217,.05); }
+  footer p { color: var(--text-dim); font-size: .9rem; font-family: system-ui, sans-serif;}
+
+  /* ==================== Page Loader ==================== */
+  .loader {
+    position: fixed; inset: 0; z-index: 100000; background: var(--bg);
+    display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 24px;
+    transition: opacity .6s, visibility .6s;
+  }
+  .loader.done { opacity: 0; visibility: hidden; }
+  .loader-bar { width: 200px; height: 3px; background: rgba(244,235,217,.1); border-radius: 3px; overflow: hidden; }
+  .loader-bar-inner { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; animation: loadBar 1.5s ease forwards; }
+  @keyframes loadBar { to { width: 100%; } }
+  .loader-text { font-size: .85rem; color: var(--text-dim); letter-spacing: 3px; }
+
+  /* ==================== Back to Top ==================== */
+  .back-to-top {
+    position: fixed; bottom: 30px; right: 30px; z-index: 999; width: 50px; height: 50px; border-radius: 50%;
+    background: var(--accent); color: #fff; border: none; font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transform: translateY(20px); transition: var(--transition); box-shadow: 0 4px 20px rgba(200,75,49,.4);
+  }
+  .back-to-top.visible { opacity: 1; transform: translateY(0); }
+  .back-to-top:hover { transform: translateY(-4px); background: #e05a3d; }
+
+  /* ==================== Responsive ==================== */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .menu-toggle { display: flex; }
+    section { padding: 80px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .cursor-dot, .cursor-ring { display: none; }
+    body { cursor: auto; }
+    a, button { cursor: pointer; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Loader -->
+<div class="loader" id="loader">
+  <div class="logo" style="font-size:2rem;">Portfolio.</div>
+  <div class="loader-bar"><div class="loader-bar-inner"></div></div>
+  <div class="loader-text">Loading Artworks</div>
+</div>
+
+<!-- Custom Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Navigation -->
+<nav id="navbar">
+  <a href="#" class="logo interactive">Artfolio.</a>
+  <ul class="nav-links">
+    <li><a href="#home" class="interactive">首页</a></li>
+    <li><a href="#work" class="interactive">作品集</a></li>
+  </ul>
+  <button class="menu-toggle interactive" id="menuToggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="home">
+  <div class="hero-bg-shapes">
+    <div class="shape"></div><div class="shape"></div><div class="shape"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="dot"></span> 探索东方美学与现代设计的碰撞
+    </div>
+    <h1>国潮 · 角色 · <span class="gradient">视觉重塑</span></h1>
+    <p>专注于 3D 角色设计、2D 原画与传统文化（非遗）的动态视觉表达。让古老的故事在现代像素中重生。</p>
+    <div class="hero-buttons">
+      <a href="#work" class="btn btn-primary interactive">浏览作品 ↓</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-mouse"></div>
+    <span>SCROLL</span>
+  </div>
+</section>
+
+<!-- Portfolio -->
+<section class="portfolio" id="work">
+  <div class="section-header reveal">
+    <span class="label">Selected Works</span>
+    <h2>精选作品集</h2>
+  </div>
+
+  <div class="filter-bar reveal">
+    <button class="filter-btn active interactive" data-filter="all">全部作品</button>
+    <button class="filter-btn interactive" data-filter="3d">3D 角色</button>
+    <button class="filter-btn interactive" data-filter="2d">2D 原画</button>
+    <button class="filter-btn interactive" data-filter="motion">动态视觉</button>
+  </div>
+
+  <div class="projects-grid" id="projectsGrid">
+    <!-- 卡片由 JS 自动生成 -->
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>© 2024 Creative Designer Portfolio. 匠心独运，视界无界.</p>
+</footer>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close interactive" id="lightboxClose">✕</button>
+  <button class="lightbox-nav lightbox-prev interactive" id="lightboxPrev">←</button>
+  <button class="lightbox-nav lightbox-next interactive" id="lightboxNext">→</button>
+  <div class="lightbox-content" id="lightboxContent">
+    <!-- 图片或视频将被注入这里 -->
+    <h3 id="lightboxTitle"></h3>
+    <p id="lightboxDesc"></p>
+  </div>
+</div>
+
+<!-- Back to Top -->
+<button class="back-to-top interactive" id="backToTop">↑</button>
+
+<script>
+// =====================================================================
+// 👇👇👇 核心数据区：在这里替换你的真实作品信息 👇👇👇
+// =====================================================================
+const projects = [
+  {
+    id: 1,
+    category: 'motion', // 分类: motion (对应动态视觉)
+    type: 'video',      // 媒体类型: 'video' 或 'image'
+    title: '皮影戏的千年演变',
+    desc: '结合非遗文化与现代 3D 动画技术，科普皮影戏从西汉到明清的历史演变。包含角色绑定、场景渲染与后期合成。',
+    tags: ['3D动画', '非遗文化', 'AI辅助'],
+    src: './video/shadow-puppet.mp4', // 👈 你的视频路径
+    poster: './images/opera-girl.jpg' // 视频封面图(可选)
+  },
+  {
+    id: 2,
+    category: '3d',     // 分类: 3d
+    type: 'image',      // 媒体类型: image
+    title: '幻羽灵蝶 · 角色三视图',
+    desc: '原创 3D 盲盒风格角色设计。以飞蛾/蝴蝶为灵感，融合柔和的马卡龙色系与传统服饰剪裁，展现轻盈灵动的质感。',
+    tags: ['3D建模', '角色设计', 'Blender/ZBrush'],
+    src: './images/2.jpg', // 👈 你的图片1路径
+    color: '#f4ebd9'
+  },
+  {
+    id: 3,
+    category: '3d',
+    type: 'image',
+    title: '梨园春梦 · 戏曲少女',
+    desc: '提取传统京剧旦角元素进行的 Q 版 3D 角色重构。注重头饰的体积感与服饰纹样的精细化表达。',
+    tags: ['国潮', 'Q版角色', '材质渲染'],
+    src: './images/opera-girl.jpg', // 👈 你的图片2路径
+    color: '#e6b95c'
+  },
+  {
+    id: 4,
+    category: '2d',     // 分类: 2d
+    type: 'image',
+    title: '九尾狐仙 · 角色原画',
+    desc: '日系二次元风格角色设定图。通过飘逸的丝带、狐耳元素与冷艳的紫色调，塑造神秘且充满魅力的狐妖形象。',
+    tags: ['2D原画', '角色设定', '厚涂'],
+    src: './images/fox-girl.png', // 👈 你的图片3路径
+    color: '#6c5ce7'
+  }
+];
+// =====================================================================
+// 👆👆👆 核心数据区结束 👆👆👆
+// =====================================================================
+
+
+// ==================== LOADER ====================
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('loader').classList.add('done'), 1500);
+});
+
+// ==================== CUSTOM CURSOR ====================
+const dot = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  dot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
+});
+function animateRing() {
+  ringX += (mouseX - ringX) * 0.15; ringY += (mouseY - ringY) * 0.15;
+  ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('.interactive').forEach(el => {
+  el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+  el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+});
+document.addEventListener('mousedown', () => ring.classList.add('click'));
+document.addEventListener('mouseup', () => ring.classList.remove('click'));
+
+// ==================== NAVBAR & BACK TO TOP ====================
+const navbar = document.getElementById('navbar');
+const backToTop = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 80);
+  backToTop.classList.toggle('visible', window.scrollY > 500);
+});
+backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+// ==================== MOBILE MENU ====================
+const menuToggle = document.getElementById('menuToggle');
+const navLinks = document.querySelector('.nav-links');
+let menuOpen = false;
+menuToggle.addEventListener('click', () => {
+  menuOpen = !menuOpen;
+  navLinks.style.display = menuOpen ? 'flex' : '';
+  if(menuOpen) {
+    Object.assign(navLinks.style, { flexDirection:'column', position:'absolute', top:'100%', left:'0', right:'0', background:'rgba(22,20,18,.98)', padding:'24px', gap:'20px', borderBottom:'1px solid rgba(244,235,217,.1)' });
+  } else {
+    navLinks.removeAttribute('style');
+  }
+});
+
+// ==================== SCROLL REVEAL ====================
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ==================== RENDER PROJECTS ====================
+const grid = document.getElementById('projectsGrid');
+
+function renderProjects(filter = 'all') {
+  grid.innerHTML = '';
+  const filtered = filter === 'all' ? projects : projects.filter(p => p.category === filter);
+
+  filtered.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'project-card reveal interactive';
+    card.dataset.index = projects.indexOf(p);
+    
+    // 判断是视频还是图片
+    let mediaHTML = '';
+    let indicatorHTML = '';
+    if (p.type === 'video') {
+      mediaHTML = `<video src="${p.src}" muted loop playsinline preload="metadata" ${p.poster ? `poster="${p.poster}"` : ''}></video>`;
+      indicatorHTML = `<div class="video-indicator">▶ Video</div>`;
+    } else {
+      mediaHTML = `<img src="${p.src}" alt="${p.title}" loading="lazy">`;
+    }
+
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="project-thumb">
+          ${indicatorHTML}
+          ${mediaHTML}
+          <div class="project-overlay">
+            <div class="overlay-actions">
+              <button class="overlay-btn view-btn interactive" title="查看详情">🔍</button>
+            </div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-tags">
+            ${p.tags.map(t => `<span class="project-tag">${t}</span>`).join('')}
+          </div>
+          <h3>${p.title}</h3>
+          <p>${p.desc}</p>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+
+    // 视频悬停自动播放逻辑
+    if (p.type === 'video') {
+      const videoEl = card.querySelector('video');
+      card.addEventListener('mouseenter', () => { try { videoEl.play(); } catch(e){} });
+      card.addEventListener('mouseleave', () => { videoEl.pause(); videoEl.currentTime = 0; });
+    }
+
+    // 3D Tilt Effect (卡片倾斜)
+    card.addEventListener('mousemove', e => {
+      const inner = card.querySelector('.card-inner');
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+      const rotateX = ((y - rect.height/2) / (rect.height/2)) * -5;
+      const rotateY = ((x - rect.width/2) / (rect.width/2)) * 5;
+      inner.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02,1.02,1.02)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.querySelector('.card-inner').style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1,1,1)';
+    });
+  });
+
+  // 重新绑定观察器和点击事件
+  document.querySelectorAll('.project-card.reveal').forEach(el => revealObserver.observe(el));
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      openLightbox(parseInt(btn.closest('.project-card').dataset.index));
+    });
+  });
+  
+  // 重新绑定光标交互
+  document.querySelectorAll('.interactive').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+  });
+}
+
+renderProjects();
+
+// ==================== FILTER ====================
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderProjects(btn.dataset.filter);
+  });
+});
+
+// ==================== LIGHTBOX (支持图片和视频) ====================
+const lightbox = document.getElementById('lightbox');
+const lightboxContent = document.getElementById('lightboxContent');
+let currentLightboxIndex = 0;
+
+function openLightbox(index) {
+  currentLightboxIndex = index;
+  updateLightbox();
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('active');
+  document.body.style.overflow = '';
+  // 关闭时停止视频播放并移除 DOM
+  const existingMedia = lightboxContent.querySelector('img, video');
+  if(existingMedia) {
+    if(existingMedia.tagName === 'VIDEO') existingMedia.pause();
+    existingMedia.remove();
+  }
+}
+
+function updateLightbox() {
+  const p = projects[currentLightboxIndex];
+  
+  // 清除旧的媒体
+  const existingMedia = lightboxContent.querySelector('img, video');
+  if(existingMedia) {
+    if(existingMedia.tagName === 'VIDEO') existingMedia.pause();
+    existingMedia.remove();
+  }
+
+  // 插入新的媒体
+  let mediaEl;
+  if (p.type === 'video') {
+    mediaEl = document.createElement('video');
+    mediaEl.src = p.src;
+    mediaEl.controls = true;
+    mediaEl.autoplay = true;
+    mediaEl.loop = true;
+  } else {
+    mediaEl = document.createElement('img');
+    mediaEl.src = p.src;
+    mediaEl.alt = p.title;
+  }
+  
+  // 将媒体插入到标题之前
+  lightboxContent.insertBefore(mediaEl, lightboxContent.firstChild);
+  
+  document.getElementById('lightboxTitle').textContent = p.title;
+  document.getElementById('lightboxDesc').textContent = p.desc;
+}
+
+document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+document.getElementById('lightboxPrev').addEventListener('click', () => {
+  currentLightboxIndex = (currentLightboxIndex - 1 + projects.length) % projects.length;
+  updateLightbox();
+});
+document.getElementById('lightboxNext').addEventListener('click', () => {
+  currentLightboxIndex = (currentLightboxIndex + 1) % projects.length;
+  updateLightbox();
+});
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('active')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') document.getElementById('lightboxPrev').click();
+  if (e.key === 'ArrowRight') document.getElementById('lightboxNext').click();
+});
+
+// ==================== SMOOTH LINKS ====================
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// ==================== PARALLAX HERO ====================
+document.querySelector('.hero').addEventListener('mousemove', e => {
+  const shapes = document.querySelectorAll('.shape');
+  const x = (e.clientX / window.innerWidth - 0.5) * 2;
+  const y = (e.clientY / window.innerHeight - 0.5) * 2;
+  shapes.forEach((s, i) => { s.style.transform = `translate(${x * (i+1)*15}px, ${y * (i+1)*15}px)`; });
+});
+</script>
+</body>
+</html>
